@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{natbib}
+
+\input{macros}
+
+\title{Chain of Thought Notes}
+\author{ayang4 }
+\date{August 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Initial Thoughts}
+
+\begin{itemize}
+    \item Started thinking about enumeration classes using CoT. Bounding the context window is like bounding the amount of information given for the next step of enumeration
+    \item We should allow a pointer to a position, so the machine can know where to retrieve the bounded amount of data from
+    \item Question: is there a problem where a CoT solution needs access to all of the previous outputs at each step?
+    \item Question: can we separate CoT with context size $k$ from context size $k+1$? 
+\end{itemize}
+
+\section{COT with Bounded Context Windows}
+
+\begin{definition}
+    We say $\COT[t(n),s(n)]$ is the class of problems solvable by transformers using COT with $t(n)$ steps and $s(n)$ context window size.
+\end{definition}
+
+The main claim at the end was that 
+
+\[\NC^1\subseteq \COT[\poly(n),k] \subseteq \COT[\poly(n),\log(n)]\subseteq \logspace\]
+
+
+\subsection{Log Size}
+
+Since one forward-pass of a transformer is in $\TC^0\subseteq\logspace$ and we can also store an additional pointer in $\log(n)$ bits, we can have $\COT$ with $\poly(n)$ steps still take $\log$ space. 
+
+\subsection{Constant Size}
+
+With $\COT$ we can simulate $\NC^1$, like simulating an automaton transitioning from state to state at each time step. 
+The other more ambitious goal was to show $\COT[\poly(n),k] \subseteq \NC^1$ by simulation of $\COT$ transformers using BWBPs. 
+
+The main idea is to simulate $t(n)$ steps of $\COT$ using a program with $t(n)$ constant-size blocks each simulating a $\TC^0$ circuit capturing the transformer, and forwarding $k$ bits of information to the next block. 
+It is not clear whether this forwarding of $k$ bits will still be simulatable by a BWBP.
+
+\subsection{Separations}
+
+The idea is then to separate $\COT[\poly(n),k] \subseteq \COT[\poly(n),\log(n)]$.
+
+\section{Other Stuff}
+
+I recently saw this paper \citep{li2025constant} which looked at COT with constant context window size and showed Turing-completeness. 
+I think their construction is extremely non-uniform (they have a positional encoding $\mathsf{pe}(i)$ which at every step $i$ basically computes the position that the Post machine's head should attend to. 
+Not sure if it will be relevant but seems good to know about this.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
